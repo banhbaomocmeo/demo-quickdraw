@@ -9,6 +9,7 @@ from keras.models import load_model
 import keras
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+from keras.applications.mobilenet import preprocess_input
 
 print("load_model")
 keras.backend.clear_session()
@@ -38,15 +39,19 @@ def index():
 def predict_api():
     image_b64 = request.values['imageBase64']
     img = get_image(image_b64)
-    img = img.reshape((1,128,128,1)) / 255
+    np.save('img.npy', 255-img)
+    img = 255 - img.reshape((1,128,128,1))
+    img = preprocess_input(img.astype(np.float32))
+
     with graph.as_default():
         result = model.predict(img)[0]
         result_arg = np.argsort(result)[::-1][:3]
-        acc  = result[result_arg]
-    print(result)
+        
+    acc  = result[result_arg]
     result_label = le.inverse_transform(result_arg)
 
-    return jsonify({"label": list(result_label), "score": [3,2,1]})
+    return jsonify({"label": list(result_label), "score": list(acc.astype(np.float))})
+    # return jsonify({"label": ["a","b","c"], "score": list(np.ones(3))})
 
 # HTTP Errors handlers
 @app.errorhandler(404)

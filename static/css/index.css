@@ -1,0 +1,28 @@
+.content {
+  margin: auto;
+  padding: auto;
+  margin-top: 200px;
+  text-align: center;
+  }
+body {
+  background-color: bisque;
+
+}
+#result{
+  margin-top: 25px;
+  margin-bottom: 10px
+}
+table, th, td {
+  margin: auto;
+  border:1px solid black;
+  border-collapse: collapse;
+}
+th, td{
+  padding: 10px;
+}
+tr:nth-child(odd){
+  background-color: #ddd;
+}
+tr:nth-child(even){
+  background-color: #fff;
+}

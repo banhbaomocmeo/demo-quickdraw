@@ -79,13 +79,46 @@ function saveImage(input) {
         },
         success: function( data, textStatus, jQxhr ){
             console.log(data)
-            label = data['label']
-            score = data['score']
-            $('#result').html(label[0] + ": " + score[0] + "<br\>" + label[1] + ": " + score[1]+ "<br\>" + label[2]+ ": " + score[2]);
+            CreateTableFromJSON(data)
         },
         error: function( jqXhr, textStatus, errorThrown ){
             $('#api_output').html( "There was an error" );
             console.log( errorThrown );
         }
     })
+}
+
+function CreateTableFromJSON(data) {
+    // EXTRACT VALUE FOR HTML HEADER. 
+    label = data['label']
+    score = data['score']
+    col = ['label', 'score']
+    // CREATE DYNAMIC TABLE.
+    var table = document.createElement("table");
+
+    // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+    var tr = table.insertRow(-1);                   // TABLE ROW.
+
+    for (var i = 0; i < 2; i++) {
+        var th = document.createElement("th");      // TABLE HEADER.
+        th.innerHTML = col[i];
+        tr.appendChild(th);
+    }
+
+    // ADD JSON DATA TO THE TABLE AS ROWS.
+    for (var i = 0; i < label.length; i++) {
+
+        tr = table.insertRow(-1);
+
+        for (var j = 0; j < col.length; j++) {
+            var tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = data[col[j]][i];
+        }
+    }
+
+    // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+    var divContainer = document.getElementById("result");
+    divContainer.innerHTML = "";
+    divContainer.appendChild(table);
 }

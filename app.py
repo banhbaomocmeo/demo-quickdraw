@@ -19,8 +19,14 @@ global graph
 graph = tf.get_default_graph()
 
 le = LabelEncoder()
-le.classes_ = np.load("le_classes.npy")
+classes_ = np.load("le_classes.npy")
+classes_ = np.append(np.append(classes_[3:307], classes_[0:3]), classes_[307:])
+le.classes_ = classes_
 
+#tent-306 = 'The Mona Lisa'-2
+#tennis racquet - 305 = 'The Great Wall of China'-302
+#televison-304 = 'The Eiffel Tower'-0
+#cat-66 = car-63
 app = Flask(__name__)
 CORS(app) # needed for cross-domain requests, allow everything by default
 
@@ -50,7 +56,7 @@ def predict_api():
         
     acc  = result[result_arg]
     result_label = le.inverse_transform(result_arg)
-
+    print(result_arg)
     return jsonify({"label": list(result_label), "score": list(acc.astype(np.float))})
     # return jsonify({"label": ["a","b","c"], "score": list(np.ones(3))})
 
